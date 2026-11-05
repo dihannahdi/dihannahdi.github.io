@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ContributionGraph from '../components/ContributionGraph.astro';
+import { profile, headline, featured, more, experience, research, achievements } from '../data/site';
+import { getCalendar } from '../lib/contributions';
+
+const cal = await getCalendar(profile.github);
+const stats = cal
+  ? [...headline, { v: cal.total.toLocaleString('en-US'), l: 'GitHub contributions in the last year' }]
+  : headline;
+---
+<Base>
+  <section class="hero wrap">
+    <picture class="hero__photo">
+      <source type="image/webp" srcset="/images/dihan-480.webp 480w, /images/dihan-960.webp 960w" sizes="(max-width: 720px) 160px, 280px" />
+      <img src="/images/dihan-480.jpg" srcset="/images/dihan-480.jpg 480w, /images/dihan-960.jpg 960w" sizes="(max-width: 720px) 160px, 280px"
+        width="480" height="480" alt="Farid Dihan Nahdi at sunrise, with a volcano behind him" fetchpriority="high" />
+    </picture>
+    <div class="hero__text">
+      <p class="eyebrow">{profile.role} · {profile.location}</p>
+      <h1>{profile.name}</h1>
+      <p class="hero__lede">{profile.lede}</p>
+      {profile.bio.map((p) => <p class="hero__bio">{p}</p>)}
+      <ul class="links">
+        <li><a class="btn btn--primary" href={`mailto:${profile.email}`}>Email me</a></li>
+        <li><a class="btn" href={`https://github.com/${profile.github}`} rel="noopener">GitHub</a></li>
+        <li><a class="btn" href={profile.linkedin} rel="noopener">LinkedIn</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap" aria-label="At a glance">
+    <dl class="stats">
+      {stats.map((s) => (
+        <div class="stat"><dt>{s.v}</dt><dd>{s.l}</dd></div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="section wrap" id="work">
+    <div class="section__head">
+      <h2>Selected work</h2>
+      <p>What each system does for the business that runs it, and the numbers behind it.</p>
+    </div>
+    <div class="cards">
+      {featured.map((p) => <ProjectCard p={p} />)}
+    </div>
+    <h3 class="subhead">More projects</h3>
+    <div class="cards cards--compact">
+      {more.map((p) => <ProjectCard p={p} compact />)}
+    </div>
+  </section>
+
+  <section class="section wrap" id="experience">
+    <div class="section__head"><h2>Experience</h2></div>
+    <ol class="timeline">
+      {experience.map((e) => (
+        <li>
+          <div class="timeline__when">{e.when}</div>
+          <div>
+            <p class="timeline__role"><strong>{e.org}</strong> · {e.role} <span class="muted">· {e.where}</span></p>
+            <p class="timeline__line">{e.line}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section wrap" id="research">
+    <div class="section__head"><h2>Research</h2></div>
+    <ol class="pubs">
+      {research.map((r) => (
+        <li class="pub">
+          <p class="pub__title">{r.url ? <a href={r.url} rel="noopener">{r.title}</a> : r.title}</p>
+          <p class="pub__venue">{r.venue}</p>
+          <p class="pub__summary">{r.summary}</p>
+          <ul class="pub__metrics">
+            {r.metrics.map((m) => <li><strong>{m.v}</strong> {m.l}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section wrap" id="achievements">
+    <div class="section__head"><h2>Achievements</h2></div>
+    <ul class="awards">
+      {achievements.map((a) => (
+        <li>
+          <span class="awards__year">{a.year}</span>
+          <div><p class="awards__title">{a.title}</p><p class="awards__detail">{a.detail}</p></div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {cal && (
+    <section class="section wrap" id="activity">
+      <div class="section__head">
+        <h2>Activity</h2>
+        <p>Live from GitHub, refreshed every day. Most of it is in company repositories:</p>
+        <ul class="orgs">
+          {profile.orgs.map((o) => (
+            <li><a href={`https://github.com/${o.login}`} rel="noopener"><img src={`https://github.com/${o.login}.png?size=48`} width="20" height="20" alt="" />{o.label}</a></li>
+          ))}
+        </ul>
+      </div>
+      <ContributionGraph cal={cal} user={profile.github} />
+    </section>
+  )}
+</Base>

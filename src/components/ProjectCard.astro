@@ -1,0 +1,29 @@
+---
+import type { Project } from '../data/site';
+import TechList from './TechList.astro';
+
+interface Props { p: Project; compact?: boolean }
+const { p, compact = false } = Astro.props;
+const host = p.url ? new URL(p.url).host.replace(/^www\./, '') : null;
+---
+<article class:list={['card', { 'card--compact': compact }]} id={p.id}>
+  <header class="card__head">
+    <p class="card__org">{p.org} <span class="card__ctx">· {p.context}</span></p>
+    <h3 class="card__title">{p.title}</h3>
+  </header>
+  <p class="card__summary">{p.summary}</p>
+  <dl class="metrics">
+    {p.metrics.map((m) => (
+      <div class="metric">
+        <dt class="metric__v">{m.v}</dt>
+        <dd class="metric__l">{m.l}</dd>
+      </div>
+    ))}
+  </dl>
+  {p.note && <p class="card__note">{p.note}</p>}
+  {p.fit && <p class="card__fit">{p.fit}</p>}
+  <footer class="card__foot">
+    <TechList items={p.tech} />
+    {host && <a class="card__link" href={p.url} rel="noopener">{host} <span aria-hidden="true">↗</span></a>}
+  </footer>
+</article>

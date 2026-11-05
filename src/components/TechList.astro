@@ -1,0 +1,20 @@
+---
+import { tech } from '../lib/icons';
+
+interface Props { items: string[] }
+const list = Astro.props.items.map(tech);
+---
+<ul class="tech" aria-label="Built with">
+  {list.map((t) => (
+    <li title={t.label}>
+      {t.path ? (
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style={t.color ? `color:${t.color}` : undefined}>
+          <path fill="currentColor" d={t.path} />
+        </svg>
+      ) : (
+        <span class="tech__dot" aria-hidden="true" />
+      )}
+      <span>{t.label}</span>
+    </li>
+  ))}
+</ul>

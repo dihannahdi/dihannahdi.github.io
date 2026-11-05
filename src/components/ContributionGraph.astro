@@ -1,0 +1,43 @@
+---
+import type { Calendar } from '../lib/contributions';
+
+interface Props { cal: Calendar; user: string }
+const { cal, user } = Astro.props;
+const fmt = (n: number) => n.toLocaleString('en-US');
+const nice = (iso: string) =>
+  new Date(iso + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+---
+<div class="contrib">
+  <div class="contrib__stats">
+    <div><strong>{fmt(cal.total)}</strong><span>contributions in the last year</span></div>
+    <div><strong>{fmt(cal.activeDays)}</strong><span>days with at least one</span></div>
+    <div><strong>{fmt(cal.longestStreak)}</strong><span>days, longest streak</span></div>
+    {cal.busiest && cal.busiest.count > 0 && (
+      <div><strong>{fmt(cal.busiest.count)}</strong><span>on the busiest day, {nice(cal.busiest.date)}</span></div>
+    )}
+  </div>
+  <div class="contrib__scroll" data-scroll-end>
+    <div class="contrib__grid" style={`--weeks:${cal.weeks.length}`} role="img" aria-label={`${fmt(cal.total)} GitHub contributions in the last year`}>
+      <div class="contrib__months" aria-hidden="true">
+        {cal.months.map((m) => <span style={`grid-column:${m.col + 1}`}>{m.label}</span>)}
+      </div>
+      <div class="contrib__days" aria-hidden="true">
+        <span style="grid-row:2">Mon</span><span style="grid-row:4">Wed</span><span style="grid-row:6">Fri</span>
+      </div>
+      <div class="contrib__cells">
+        {cal.weeks.map((week) =>
+          week.map((d) =>
+            d ? <i class={`l${d.level}`} title={`${d.count} on ${nice(d.date)}`} /> : <i class="empty" />
+          )
+        )}
+      </div>
+    </div>
+  </div>
+  <div class="contrib__foot">
+    <a href={`https://github.com/${user}`} rel="noopener">github.com/{user} ↗</a>
+    <span class="contrib__legend" aria-hidden="true">Less <i class="l0" /><i class="l1" /><i class="l2" /><i class="l3" /><i class="l4" /> More</span>
+  </div>
+</div>
+<script is:inline>
+  document.querySelectorAll('[data-scroll-end]').forEach((el) => { el.scrollLeft = el.scrollWidth; });
+</script>
