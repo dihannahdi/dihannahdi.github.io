@@ -1,0 +1,241 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const repo = 'https://github.com/dihannahdi/transcribe';
+const install = ['/plugin marketplace add dihannahdi/transcribe', '/plugin install transcribe@dihannahdi'];
+
+const steps = [
+  {
+    n: '1',
+    t: 'Listen',
+    d: 'Your files are joined in order and cut into nine-minute pieces at real pauses, so no sentence is split in half. Gemini transcribes five pieces at a time, word for word, in whatever languages were spoken.',
+  },
+  {
+    n: '2',
+    t: 'Check',
+    d: 'Before running the whole recording, it transcribes one moment you can vouch for, like your own introduction, and compares. Afterwards an audit flags every piece that came back empty, cut short or with a gap, and those are redone.',
+  },
+  {
+    n: '3',
+    t: 'Clean',
+    d: 'Claude rewrites each piece as readable prose: fillers and false starts go, every fact, number and name stays. Anything it can’t be sure of goes on one short list for you to answer.',
+  },
+  {
+    n: '4',
+    t: 'Write',
+    d: 'Claude reads the whole transcript and writes the TL;DR, the summary and the glossary, builds the Word file, and opens it to check the pages before handing it to you.',
+  },
+];
+
+const reasons = [
+  {
+    t: 'Works on what you already recorded',
+    d: 'No bot joins your call. A phone recording, a stack of WhatsApp voice notes, a seminar video, three files that belong together: any of these works.',
+  },
+  {
+    t: 'Decisions, with the evidence attached',
+    d: 'Speech-to-text gives you every word. Meeting apps give you bullets you can’t verify. This gives you a summary to act on, with the full transcript right behind it.',
+  },
+  {
+    t: 'It tells you what it checked',
+    d: 'Models sometimes invent a passage or skip a minute. This one tests itself before trusting a run, and when it hands over the file it says what was verified and what is still a guess.',
+  },
+  {
+    t: 'Built for how people really talk',
+    d: 'Indonesian, English and Javanese in one sentence are transcribed as spoken. Nicknames, product names and who was absent come from one short glossary, so nobody gets credited with a line they never said.',
+  },
+  {
+    t: 'No subscription',
+    d: 'It runs on your own Gemini API key, and you pay only for what you transcribe. Before a long batch starts, it estimates the cost.',
+  },
+];
+---
+<Base
+  title="transcribe · a Claude Code skill by Dihan Nahdi"
+  description="A Claude Code skill that turns a long recording into one Word document: TL;DR, decisions with owners, a glossary, and the full cleaned transcript. Open source."
+>
+  <section class="sk-hero wrap">
+    <p class="eyebrow">Claude Code skill · open source · MIT</p>
+    <h1>transcribe</h1>
+    <p class="sk-lede">Turn a long recording into the document someone would otherwise spend a day writing.</p>
+    <p class="sk-body">
+      Give it a two-hour meeting, a workshop, an interview or a folder of voice notes. It gives you back
+      one Word file: a short TL;DR, the decisions with who owns them and by when, a glossary of the terms
+      people used, and the whole conversation written out clean, so you can check every line of the summary.
+    </p>
+
+    <div class="sk-install">
+      <div class="sk-install__head">
+        <span>Install in Claude Code</span>
+        <button type="button" class="sk-copy" data-copy={install.join('\n')}>Copy</button>
+      </div>
+      <pre><code>{install.join('\n')}</code></pre>
+      <p class="sk-install__then">Then type <code>/transcribe</code> with your files. The first run checks your setup and tells you exactly what’s missing.</p>
+    </div>
+
+    <ul class="links">
+      <li><a class="btn btn--primary" href={repo} rel="noopener">View on GitHub</a></li>
+      <li><a class="btn" href={`${repo}/blob/main/examples/lumen-planning.md`} rel="noopener">See a sample output</a></li>
+    </ul>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head">
+      <h2>What you get</h2>
+      <p>One document, in the order people actually read it. This is the opening page of the sample.</p>
+    </div>
+    <div class="sk-doc">
+      <figure class="sk-page" aria-label="First page of a sample transcript document">
+        <p class="sk-page__title">Lumen Launch Planning</p>
+        <p class="sk-page__sub">TL;DR, Summary and Full Transcript</p>
+        <table class="sk-page__info">
+          <tr><th>Recording</th><td>Product planning call, two speakers</td></tr>
+          <tr><th>Length</th><td>1 min 37 s, two files joined</td></tr>
+        </table>
+        <p class="sk-page__h">TL;DR</p>
+        <ul class="sk-page__list">
+          <li><b>Launch stays on 12 December.</b> Budget is $42,000; marketing gets about half.</li>
+          <li><b>Cut the second onboarding screen.</b> 6 of 10 test users dropped off there.</li>
+          <li><b>Priya builds a prototype by Friday</b>, with Marco from engineering for two days.</li>
+          <li><b>Pricing page is wrong:</b> it says $9 per seat; the agreed price is $12. Daniel fixes it tonight.</li>
+        </ul>
+      </figure>
+      <ol class="sk-toc">
+        <li><strong>TL;DR</strong><span>8–12 lines, each starting with the decision or the fact.</span></li>
+        <li><strong>Summary</strong><span>By topic, with a timeline, follow-ups (who, what, by when) and what still needs confirming.</span></li>
+        <li><strong>Glossary</strong><span>Every term, acronym and name that came up, explained.</span></li>
+        <li><strong>Full transcript</strong><span>The whole conversation, cleaned, in nine-minute sections with exact start times.</span></li>
+        <li><strong>How it was made</strong><span>Which model, what was edited, and what the markers mean.</span></li>
+      </ol>
+    </div>
+    <p class="sk-note">Short on time? Choose <b>Summary only</b>. Need every word as spoken? Choose <b>Verbatim</b>. You pick at the start.</p>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head">
+      <h2>How it works</h2>
+      <p>You answer a few questions once. Then it runs on its own and comes back with the file.</p>
+    </div>
+    <ol class="sk-steps">
+      {steps.map((s) => (
+        <li class="sk-step">
+          <span class="sk-step__n">{s.n}</span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head"><h2>Why this one</h2></div>
+    <ul class="sk-reasons">
+      {reasons.map((r) => (
+        <li><h3>{r.t}</h3><p>{r.d}</p></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head"><h2>Good to know</h2></div>
+    <dl class="sk-facts">
+      <div><dt>Cost</dt><dd>About 25–40k tokens per nine minutes of audio, measured. A 2 h 20 min session came to 466k.</dd></div>
+      <div><dt>Privacy</dt><dd>Audio goes to the Gemini API, text to Claude, nowhere else. On Gemini’s free tier Google may use what you send to improve its products; a key with billing turned on keeps it out of that.</dd></div>
+      <div><dt>Names</dt><dd>A speaker gets a name only with evidence: they introduce themselves, or someone calls them by it. Otherwise they stay “Participant”, never a guess.</dd></div>
+      <div><dt>Needs</dt><dd>Claude Code, Python 3.10+, ffmpeg and a free Gemini API key. The first run checks all of it.</dd></div>
+    </dl>
+  </section>
+
+  <section class="section wrap">
+    <div class="sk-origin">
+      <p>
+        It started as a private tool for turning a two-hour Indonesian sharing session, recorded in a noisy café,
+        into minutes for the next year’s committee. Every check in it is there because something went wrong once:
+        a model that made up a passage, a file merge that turned three minutes into nearly eleven hours, a pause
+        detector that heard no pauses in a café.
+      </p>
+      <a class="btn btn--primary" href={repo} rel="noopener">Get it on GitHub</a>
+    </div>
+  </section>
+
+  <script is:inline>
+    document.querySelectorAll('[data-copy]').forEach((b) => {
+      b.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(b.dataset.copy);
+          b.textContent = 'Copied';
+        } catch {
+          b.textContent = 'Select and copy';
+        }
+        setTimeout(() => (b.textContent = 'Copy'), 1800);
+      });
+    });
+  </script>
+</Base>
+
+<style>
+  .sk-hero { padding: 72px 0 8px; }
+  .sk-hero > * { max-width: 760px; }
+  .sk-lede { font-size: clamp(20px, 2.6vw, 26px); font-weight: 600; line-height: 1.35; margin: 14px 0 16px; letter-spacing: -0.01em; }
+  .sk-body { color: var(--muted); font-size: 17px; max-width: 62ch; }
+
+  .sk-install { margin-top: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .sk-install__head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--muted); }
+  .sk-copy { font: inherit; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .sk-copy:hover { border-color: var(--accent); color: var(--accent); }
+  .sk-install pre { margin: 0; padding: 16px; overflow-x: auto; font: 500 14px/1.7 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+  .sk-install__then { padding: 0 16px 14px; color: var(--muted); font-size: 14px; }
+  code { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 0.92em; }
+  .sk-install__then code { background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; }
+
+  .sk-doc { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+  .sk-page {
+    margin: 0; padding: 34px 34px 28px; background: #fff; color: #1b1f27; border-radius: 6px;
+    border: 1px solid var(--line); box-shadow: 0 2px 4px rgb(20 20 30 / 6%), 0 18px 40px rgb(20 20 30 / 8%);
+    font-family: Calibri, Carlito, 'Segoe UI', system-ui, sans-serif; font-size: 13.5px; line-height: 1.45;
+  }
+  .sk-page__title { text-align: center; color: #1f2a44; font-size: 22px; padding-bottom: 6px; border-bottom: 1.5px solid #4f81bd; }
+  .sk-page__sub { text-align: center; font-size: 12.5px; margin: 8px 0 12px; }
+  .sk-page__info { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .sk-page__info th, .sk-page__info td { border: 1px solid #333; padding: 2px 6px; text-align: left; }
+  .sk-page__info th { width: 34%; }
+  .sk-page__h { color: #1f2a44; font-weight: 700; font-size: 16px; margin: 20px 0 6px; }
+  .sk-page__list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+  .sk-toc { list-style: none; counter-reset: toc; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .sk-toc li { counter-increment: toc; display: grid; grid-template-columns: 28px 1fr; column-gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .sk-toc li::before { content: counter(toc); grid-row: span 2; color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sk-toc strong { font-weight: 700; }
+  .sk-toc span { color: var(--muted); font-size: 14.5px; }
+  .sk-note { margin-top: 22px; color: var(--muted); font-size: 15px; }
+
+  .sk-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .sk-step { padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .sk-step__n { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: 14px; }
+  .sk-step h3 { font-size: 18px; margin: 14px 0 6px; }
+  .sk-step p { color: var(--muted); font-size: 14.5px; }
+
+  .sk-reasons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 40px; }
+  .sk-reasons li { padding-left: 16px; border-left: 2px solid var(--accent); }
+  .sk-reasons h3 { font-size: 17px; margin-bottom: 4px; }
+  .sk-reasons p { color: var(--muted); font-size: 15px; }
+
+  .sk-facts { margin: 0; border-top: 1px solid var(--line); }
+  .sk-facts div { display: grid; grid-template-columns: 180px 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .sk-facts dt { font-weight: 700; }
+  .sk-facts dd { margin: 0; color: var(--muted); font-size: 15px; max-width: 68ch; }
+
+  .sk-origin { padding: 30px; border-radius: var(--radius); background: var(--accent-soft); display: grid; gap: 20px; justify-items: start; }
+  .sk-origin p { font-size: 17px; line-height: 1.55; max-width: 68ch; }
+
+  @media (max-width: 960px) {
+    .sk-steps { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .sk-hero { padding-top: 40px; }
+    .sk-doc, .sk-steps, .sk-reasons { grid-template-columns: 1fr; }
+    .sk-page { padding: 22px 18px; }
+    .sk-facts div { grid-template-columns: 1fr; gap: 2px; }
+    .sk-origin { padding: 22px; }
+  }
+</style>
