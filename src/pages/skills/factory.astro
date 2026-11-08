@@ -1,0 +1,203 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const repo = 'https://github.com/dihannahdi/factory';
+const tryIt = ['git clone https://github.com/dihannahdi/factory', 'cd factory', 'npm run demo'];
+
+const steps = [
+  {
+    n: '1',
+    t: 'Pick',
+    d: 'Every minute it reads your open issues. It takes the next one that has a milestone, no assignee, and no open dependency. Write “Depends on: #12” in an issue and it waits for #12.',
+  },
+  {
+    n: '2',
+    t: 'Plan and build',
+    d: 'A model reads the issue and the code, writes a plan with one line per requirement, then builds it with tests. Your repo’s AGENTS.md or CLAUDE.md sets the rules it follows.',
+  },
+  {
+    n: '3',
+    t: 'Check',
+    d: 'Your build and tests run in the sandbox. A second model reviews the diff against the plan and checks each requirement against real code and a real test.',
+  },
+  {
+    n: '4',
+    t: 'Ship',
+    d: 'It opens the PR and waits for your CI. If CI fails, it reads the log and tries a fix. By default it then stops and labels the PR for you to merge. If you allow it, it merges and checks your deploy too.',
+  },
+];
+
+const reasons = [
+  {
+    t: 'You can watch it work',
+    d: 'The console draws your backlog as a small factory floor. Each lane is a production line, and you can see the file the model is reading or editing, the CI checks coming in, and the token count rising.',
+  },
+  {
+    t: 'You can steer it mid-run',
+    d: 'Send a lane a note, such as “keep the limit check in one SQL statement”, and the model reads it on its next turn. You can also pause the whole line, push an issue to the front, skip one, or stop a lane.',
+  },
+  {
+    t: 'The agent holds no secrets',
+    d: 'Each lane runs as an unprivileged user in a locked-down systemd unit. It has no token and no keys, and it can’t reach your other services. Commits leave the sandbox as a git bundle, and root checks them before pushing.',
+  },
+  {
+    t: '$0, or $10 a month',
+    d: 'It runs on OpenCode Zen’s free models out of the box. When free capacity runs short, add OpenCode Go for $10 a month. factory keeps spending under the caps you set per 5 hours, per week and per month.',
+  },
+  {
+    t: 'It says when it gives up',
+    d: 'If it can’t finish an issue, it comments with the reason and a link to the log, labels the issue, and moves on. You never come back to a lane that quietly stalled.',
+  },
+];
+---
+<Base
+  title="factory · an open-source coding-agent orchestrator by Dihan Nahdi"
+  description="factory works the open issues of a GitHub repository end to end with free or $10/month models, in a sandbox, and shows the whole thing as a live factory floor you can steer. Open source, MIT."
+>
+  <section class="sk-hero wrap">
+    <p class="eyebrow">Open source · MIT</p>
+    <h1>factory</h1>
+    <p class="sk-lede">Orchestrator should be fun.</p>
+    <p class="sk-body">
+      factory takes the open issues in a GitHub repository and works them end to end on its own: plan, code,
+      tests, review, pull request, CI. Up to three issues run at once. A live console shows every lane as a
+      production line, so you can follow what each one is doing and step in at any point.
+    </p>
+
+    <div class="sk-install">
+      <div class="sk-install__head">
+        <span>Try it in one minute: no token, no API key, just Node 22</span>
+        <button type="button" class="sk-copy" data-copy={tryIt.join(' && ')}>Copy</button>
+      </div>
+      <pre><code>{tryIt.join('\n')}</code></pre>
+      <p class="sk-install__then">A simulator plays three lanes working through a made-up shop’s backlog, and the real console opens in your browser. Pause the line, queue an issue, steer a lane. Nothing leaves your machine.</p>
+    </div>
+
+    <ul class="links">
+      <li><a class="btn btn--primary" href={repo} rel="noopener">View on GitHub</a></li>
+      <li><a class="btn" href={`${repo}/blob/main/SECURITY.md`} rel="noopener">Read the security notes</a></li>
+    </ul>
+  </section>
+
+  <section class="section wrap">
+    <figure class="fx-shot">
+      <img src="/skills/factory-console.jpg" width="1440" height="900" loading="lazy"
+        alt="The factory console. An isometric factory floor with three production lines; two have opened pull requests and are waiting on CI. A side panel shows each lane's issue, model, tokens and the commands it just ran." />
+      <figcaption>Two lanes have opened their PRs and are waiting on CI. The third is parked. On the right: each lane’s issue, model, tokens, and the last things it read and ran.</figcaption>
+    </figure>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head">
+      <h2>How it works</h2>
+      <p>Every issue goes through the same four stations. Each station can stop the issue and say why.</p>
+    </div>
+    <ol class="sk-steps">
+      {steps.map((s) => (
+        <li class="sk-step">
+          <span class="sk-step__n">{s.n}</span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head"><h2>Why this one</h2></div>
+    <ul class="sk-reasons">
+      {reasons.map((r) => (
+        <li><h3>{r.t}</h3><p>{r.d}</p></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head"><h2>Good to know</h2></div>
+    <dl class="sk-facts">
+      <div><dt>Cost</dt><dd>$0 on OpenCode Zen’s free models. $10 a month with <a href="https://opencode.ai/go" rel="noopener">OpenCode Go</a>, which factory keeps under your caps. Your CI minutes are separate, and a PR may run CI more than once after a fix.</dd></div>
+      <div><dt>Merging</dt><dd>Off by default. It opens the PR, waits for green CI and its own review, then hands the PR to you. Automatic merge and deploy checks are one setting away.</dd></div>
+      <div><dt>Runs on</dt><dd>The demo runs anywhere Node 22 runs. Real lanes need Linux with systemd and root today; running in containers without root, and on macOS, is next on the roadmap. Run <code>factory doctor</code> to see what your machine is missing.</dd></div>
+      <div><dt>Trust</dt><dd>Anyone who can write an issue it picks can steer the model. Your CI also runs the agent’s code with your repo’s secrets. Use it on repos where you trust everyone who files issues, and keep deploy secrets in protected environments.</dd></div>
+      <div><dt>Terminal</dt><dd><code>factory demo</code>, <code>factory doctor</code> and <code>factory status --watch</code> are here now. Next: <code>init</code>, <code>logs</code>, <code>steer</code> and <code>spend</code>.</dd></div>
+    </dl>
+  </section>
+
+  <section class="section wrap">
+    <div class="sk-origin">
+      <p>
+        It started as a private harness for working through one project’s backlog on free models, and has been
+        doing that every day since October 2026. Most of what’s in it exists because a lane failed in some way:
+        a free model got rate-limited mid-turn, a test database disappeared during a run, CI went red because of
+        a test the PR never touched, or a model checked off a requirement it hadn’t done. The console exists
+        because watching the agent work turned out to be the best way to trust it.
+      </p>
+      <a class="btn btn--primary" href={repo} rel="noopener">Get it on GitHub</a>
+    </div>
+  </section>
+
+  <script is:inline>
+    document.querySelectorAll('[data-copy]').forEach((b) => {
+      b.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(b.dataset.copy);
+          b.textContent = 'Copied';
+        } catch {
+          b.textContent = 'Select and copy';
+        }
+        setTimeout(() => (b.textContent = 'Copy'), 1800);
+      });
+    });
+  </script>
+</Base>
+
+<style>
+  .sk-hero { padding: 72px 0 8px; }
+  .sk-hero > * { max-width: 760px; }
+  .sk-lede { font-size: clamp(20px, 2.6vw, 26px); font-weight: 600; line-height: 1.35; margin: 14px 0 16px; letter-spacing: -0.01em; }
+  .sk-body { color: var(--muted); font-size: 17px; max-width: 62ch; }
+
+  .sk-install { margin-top: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .sk-install__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--muted); }
+  .sk-copy { font: inherit; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; flex: none; }
+  .sk-copy:hover { border-color: var(--accent); color: var(--accent); }
+  .sk-install pre { margin: 0; padding: 16px; overflow-x: auto; font: 500 14px/1.7 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+  .sk-install__then { padding: 0 16px 14px; color: var(--muted); font-size: 14px; }
+  code { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 0.92em; }
+  .sk-facts code { background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; }
+
+  .fx-shot { margin: 0; }
+  .fx-shot img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: 0 2px 4px rgb(20 20 30 / 6%), 0 18px 40px rgb(20 20 30 / 12%); }
+  .fx-shot figcaption { margin-top: 12px; color: var(--muted); font-size: 14.5px; max-width: 80ch; }
+
+  .sk-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .sk-step { padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .sk-step__n { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: 14px; }
+  .sk-step h3 { font-size: 18px; margin: 14px 0 6px; }
+  .sk-step p { color: var(--muted); font-size: 14.5px; }
+
+  .sk-reasons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 40px; }
+  .sk-reasons li { padding-left: 16px; border-left: 2px solid var(--accent); }
+  .sk-reasons h3 { font-size: 17px; margin-bottom: 4px; }
+  .sk-reasons p { color: var(--muted); font-size: 15px; }
+
+  .sk-facts { margin: 0; border-top: 1px solid var(--line); }
+  .sk-facts div { display: grid; grid-template-columns: 180px 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .sk-facts dt { font-weight: 700; }
+  .sk-facts dd { margin: 0; color: var(--muted); font-size: 15px; max-width: 68ch; }
+  .sk-facts a { color: var(--accent); }
+
+  .sk-origin { padding: 30px; border-radius: var(--radius); background: var(--accent-soft); display: grid; gap: 20px; justify-items: start; }
+  .sk-origin p { font-size: 17px; line-height: 1.55; max-width: 68ch; }
+
+  @media (max-width: 960px) {
+    .sk-steps { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .sk-hero { padding-top: 40px; }
+    .sk-steps, .sk-reasons { grid-template-columns: 1fr; }
+    .sk-facts div { grid-template-columns: 1fr; gap: 2px; }
+    .sk-origin { padding: 22px; }
+    .sk-install__head { flex-wrap: wrap; }
+  }
+</style>
