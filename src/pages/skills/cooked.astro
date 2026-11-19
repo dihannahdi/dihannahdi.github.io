@@ -1,0 +1,251 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const repo = 'https://github.com/dihannahdi/cooked';
+const paste = 'Set up cooked for me: clone https://github.com/dihannahdi/cooked into a temp folder and follow its SKILL.md';
+const clone = 'git clone --depth 1 https://github.com/dihannahdi/cooked ~/.claude/skills/cooked';
+
+// Two voices of the same two notifications. The title carries the voice; the body is what Claude actually said.
+const toasts = [
+  {
+    en: { t: '✅ Fix login redirect loop is cooked', b: 'Redirect loop fixed: the session cookie now survives the OAuth callback. 14 tests pass.' },
+    id: { t: '✅ Fix login redirect loop udah kelar nih', b: 'Redirect loop beres: cookie sesi sekarang aman lewat callback OAuth. 14 tes lolos.' },
+    foot: '4m 12s  ·  api',
+  },
+  {
+    en: { t: '✋ Fix login redirect loop needs your ok', b: 'Claude wants to use Bash. Waiting for your approval.' },
+    id: { t: '✋ butuh izin nih di Fix login redirect loop', b: 'claude mau pake Bash, lagi nungguin approval lu nih buat lanjut.' },
+    foot: 'api',
+  },
+];
+
+const parts = [
+  { t: '✅ or ✋ comes first', d: 'Done, or Claude needs you. You know which before you read a word.' },
+  { t: 'The session’s name', d: 'The same name as its tab, so five sessions never blur together.' },
+  { t: 'What actually happened', d: 'Claude’s last line, the exact tool waiting for approval, or the question it asked.' },
+  { t: 'How long it cooked', d: 'And which folder it ran in.' },
+  { t: 'Click it', d: 'You’re back in that tab, even when several sessions share one Windows Terminal window.' },
+];
+
+const quiet = [
+  { t: 'You’re already watching', d: 'Nothing pops up while that tab is in front of you, unless you’ve been idle for 90 seconds and probably walked away.' },
+  { t: 'Quick turns', d: 'A “done” notification only for turns of 30 seconds or more. You pick the cut-off.' },
+  { t: 'Do Not Disturb', d: 'During Do Not Disturb, Focus, a fullscreen game or a presentation it still shows, but without a sound.' },
+  { t: 'One per session', d: 'A new notification replaces that session’s last one. Answered a permission at the terminal? Its notification goes away.' },
+];
+---
+<Base
+  title="cooked · a Claude Code skill by Dihan Nahdi"
+  description="Send Claude Code a prompt, walk away, and get a Windows notification when it's done or needs you. Click it to jump back to the tab. One paste to set up. Open source."
+>
+  <section class="sk-hero wrap">
+    <p class="eyebrow">Claude Code skill · Windows · open source · MIT</p>
+    <h1>cooked</h1>
+    <p class="sk-lede">Send Claude a prompt, walk away. Windows tells you when it’s cooked.</p>
+    <p class="sk-body">
+      A notification pops up when a turn is done, with the session’s name, Claude’s last line and how long it took,
+      or the moment Claude is stuck waiting for your permission or an answer. Click it and you’re back in that exact tab.
+    </p>
+
+    <div class="sk-install">
+      <div class="sk-install__head">
+        <span>Paste into Claude Code</span>
+        <button type="button" class="sk-copy" data-copy={paste}>Copy</button>
+      </div>
+      <pre><code>{paste}</code></pre>
+      <p class="sk-install__then">
+        It asks four things in one dialog, sends a test notification, and cleans up after itself.
+        It’s set up once, so nothing stays in your skill list.
+      </p>
+    </div>
+
+    <ul class="links">
+      <li><a class="btn btn--primary" href={repo} rel="noopener">View on GitHub</a></li>
+      <li><a class="btn" href="#what">See what pops up</a></li>
+    </ul>
+  </section>
+
+  <section class="section wrap" id="what">
+    <div class="section__head">
+      <h2>What pops up</h2>
+      <p>The voice is yours to pick. The content is always what really happened.</p>
+    </div>
+    <div class="ck-show">
+      <div>
+        <div class="ck-voice" role="group" aria-label="Voice">
+          <button type="button" data-voice="en" aria-pressed="true">Casual English</button>
+          <button type="button" data-voice="id" aria-pressed="false">Bahasa gaul</button>
+        </div>
+        <figure class="ck-stage" aria-label="Two Windows notifications from cooked in the corner of a desktop">
+          {toasts.map((x) => (
+            <div class="ck-toast">
+              <div class="ck-toast__head">
+                <svg class="ck-toast__icon" viewBox="0 0 16 16" aria-hidden="true">
+                  <rect width="16" height="16" rx="4" fill="#d97757" />
+                  <g stroke="#fff" stroke-width="1.5" stroke-linecap="round">
+                    <path d="M8 3.6v8.8M3.6 8h8.8M4.9 4.9l6.2 6.2M11.1 4.9l-6.2 6.2" />
+                  </g>
+                </svg>
+                <span>Claude Code</span>
+                <span class="ck-toast__ctl" aria-hidden="true">···&nbsp;&nbsp;✕</span>
+              </div>
+              <p class="ck-toast__t" data-en={x.en.t} data-id={x.id.t}>{x.en.t}</p>
+              <p class="ck-toast__b" data-en={x.en.b} data-id={x.id.b}>{x.en.b}</p>
+              <p class="ck-toast__f">{x.foot}</p>
+            </div>
+          ))}
+        </figure>
+      </div>
+      <ol class="sk-toc">
+        {parts.map((p) => (
+          <li><strong>{p.t}</strong><span>{p.d}</span></li>
+        ))}
+      </ol>
+    </div>
+    <p class="sk-note">
+      Or pick <b>My own voice</b>: setup reads your recent prompts (they stay on your machine) or a few messages you paste,
+      and writes every line the way you talk.
+    </p>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head">
+      <h2>Quiet when it should be</h2>
+      <p>A notification you didn’t need is worse than none. So it holds back on its own.</p>
+    </div>
+    <ul class="sk-steps">
+      {quiet.map((q) => (
+        <li class="sk-step">
+          <h3>{q.t}</h3>
+          <p>{q.d}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head">
+      <h2>Setup asks four things</h2>
+      <p>In one dialog, with a recommended answer for each. Then it builds, hooks itself in, and shows you a test.</p>
+    </div>
+    <dl class="sk-facts">
+      <div><dt>Voice</dt><dd>Casual English, bahasa gaul, or your own.</dd></div>
+      <div><dt>Sound</dt><dd>The Windows default, any mp3, wav or wma you like, or silent.</dd></div>
+      <div><dt>Done ping</dt><dd>For turns of 30 seconds or more, 60 or more, or every turn. Permission and question notifications always come.</dd></div>
+      <div><dt>Phone</dt><dd>Off unless you want it. On, Claude Code’s Remote Control pushes to the Claude app when Claude needs you, and Claude can push when a long task finishes while you’re away.</dd></div>
+    </dl>
+  </section>
+
+  <section class="section wrap">
+    <div class="section__head"><h2>Good to know</h2></div>
+    <dl class="sk-facts">
+      <div><dt>Needs</dt><dd>Windows 10 or 11 and Claude Code. Click-to-tab needs Windows Terminal; other terminals get click-to-window. Setup checks the rest.</dd></div>
+      <div><dt>Cost</dt><dd>About one second of background work per notification, and no tokens.</dd></div>
+      <div><dt>Privacy</dt><dd>Nothing leaves your computer. It reads the session’s transcript on disk for its name and last line, and writes only to <code>~/.claude/cooked</code> and two per-user registry keys. No admin rights.</dd></div>
+      <div><dt>Change it</dt><dd>Wording in <code>~/.claude/cooked/copy.json</code>, sound and quiet rules in <code>config.json</code>. To remove it, ask Claude Code to “uninstall cooked”.</dd></div>
+      <div><dt>As a command</dt><dd>Keep it as a command for later changes: <code>{clone}</code>, then <code>/cooked voice</code>, <code>sound</code>, <code>test</code> or <code>uninstall</code>.</dd></div>
+    </dl>
+  </section>
+
+  <section class="section wrap">
+    <div class="sk-origin">
+      <p>
+        It started as one hook on my own laptop. I wanted to give Claude a task and do other things freely until my laptop
+        told me it was done. Then it grew: the session’s name, a click back to the right tab, my own words and my own sound,
+        and silence when I’m already watching.
+      </p>
+      <a class="btn btn--primary" href={repo} rel="noopener">Get it on GitHub</a>
+    </div>
+  </section>
+
+  <script is:inline>
+    document.querySelectorAll('[data-copy]').forEach((b) => {
+      b.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(b.dataset.copy);
+          b.textContent = 'Copied';
+        } catch {
+          b.textContent = 'Select and copy';
+        }
+        setTimeout(() => (b.textContent = 'Copy'), 1800);
+      });
+    });
+    document.querySelectorAll('[data-voice]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const v = b.dataset.voice;
+        document.querySelectorAll('[data-voice]').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+        document.querySelectorAll('.ck-toast [data-en]').forEach((el) => (el.textContent = el.dataset[v]));
+      });
+    });
+  </script>
+</Base>
+
+<style>
+  .sk-hero { padding: 72px 0 8px; }
+  .sk-hero > * { max-width: 760px; }
+  .sk-lede { font-size: clamp(20px, 2.6vw, 26px); font-weight: 600; line-height: 1.35; margin: 14px 0 16px; letter-spacing: -0.01em; }
+  .sk-body { color: var(--muted); font-size: 17px; max-width: 62ch; }
+
+  .sk-install { margin-top: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .sk-install__head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--muted); }
+  .sk-copy { font: inherit; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .sk-copy:hover { border-color: var(--accent); color: var(--accent); }
+  .sk-install pre { margin: 0; padding: 16px; white-space: pre-wrap; word-break: break-word; font: 500 14px/1.7 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+  .sk-install__then { padding: 0 16px 14px; color: var(--muted); font-size: 14px; }
+  code { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 0.92em; }
+  .sk-facts code { background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; word-break: break-word; }
+
+  .ck-show { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+  .ck-voice { display: inline-flex; gap: 4px; padding: 4px; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+  .ck-voice button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; }
+  .ck-voice button[aria-pressed='true'] { background: var(--accent); color: var(--accent-ink); }
+
+  .ck-stage {
+    margin: 0; padding: 72px 22px 22px; border-radius: var(--radius);
+    background: radial-gradient(120% 90% at 0% 0%, #2a4d6e 0%, #16324a 45%, #0d1b2a 100%);
+    display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+  }
+  .ck-toast {
+    width: 100%; max-width: 380px; padding: 12px 14px 14px; border-radius: 8px;
+    background: rgb(40 40 40 / 92%); border: 1px solid rgb(255 255 255 / 9%);
+    box-shadow: 0 10px 34px rgb(0 0 0 / 38%);
+    color: #fff; font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  }
+  .ck-toast__head { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #c8c8c8; margin-bottom: 10px; }
+  .ck-toast__icon { width: 16px; height: 16px; flex: none; }
+  .ck-toast__ctl { margin-left: auto; color: #9a9a9a; letter-spacing: 0.04em; }
+  .ck-toast__t { font-size: 14px; font-weight: 600; line-height: 1.35; }
+  .ck-toast__b { font-size: 13.5px; color: #d6d6d6; line-height: 1.4; margin-top: 2px; }
+  .ck-toast__f { font-size: 12px; color: #9a9a9a; margin-top: 8px; white-space: pre; }
+
+  .sk-toc { list-style: none; counter-reset: toc; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .sk-toc li { counter-increment: toc; display: grid; grid-template-columns: 28px 1fr; column-gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .sk-toc li::before { content: counter(toc); grid-row: span 2; color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sk-toc strong { font-weight: 700; }
+  .sk-toc span { color: var(--muted); font-size: 14.5px; }
+  .sk-note { margin-top: 22px; color: var(--muted); font-size: 15px; max-width: 72ch; }
+
+  .sk-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .sk-step { padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .sk-step h3 { font-size: 17px; margin-bottom: 6px; }
+  .sk-step p { color: var(--muted); font-size: 14.5px; }
+
+  .sk-facts { margin: 0; border-top: 1px solid var(--line); }
+  .sk-facts div { display: grid; grid-template-columns: 180px 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .sk-facts dt { font-weight: 700; }
+  .sk-facts dd { margin: 0; color: var(--muted); font-size: 15px; max-width: 68ch; }
+
+  .sk-origin { padding: 30px; border-radius: var(--radius); background: var(--accent-soft); display: grid; gap: 20px; justify-items: start; }
+  .sk-origin p { font-size: 17px; line-height: 1.55; max-width: 68ch; }
+
+  @media (max-width: 960px) {
+    .sk-steps { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .sk-hero { padding-top: 40px; }
+    .ck-show, .sk-steps { grid-template-columns: 1fr; }
+    .ck-stage { padding: 40px 12px 12px; }
+    .sk-facts div { grid-template-columns: 1fr; gap: 2px; }
+    .sk-origin { padding: 22px; }
+  }
+</style>
