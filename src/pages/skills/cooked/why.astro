@@ -1,0 +1,92 @@
+---
+import Base from '../../../layouts/Base.astro';
+
+const paste = 'Set up cooked for me: clone https://github.com/dihannahdi/cooked into a temp folder and follow its SKILL.md';
+---
+<Base
+  title="Let it cook · Dihan Nahdi"
+  description="I used to keep checking on Claude Code while it worked. A small sound let me stop, and spend the wait learning something else."
+>
+  <article class="wrap essay">
+    <p class="eyebrow">Why I made cooked · 23 Nov 2026</p>
+    <h1>Let it cook</h1>
+    <p class="essay__lede">A small sound that let me stop watching Claude work.</p>
+
+    <p>When I give Claude Code a task, it usually works for a few minutes. Sometimes ten, sometimes more.</p>
+    <p>
+      I used to spend those minutes checking. Switch to the terminal. Still working. Switch back. A minute later, check
+      again. Nothing was wrong, and nothing needed me. I just couldn’t stop wondering if it was done yet.
+    </p>
+    <p>
+      It was a small anxiety, but it stayed with me all day. I would open a course and not really follow it. I would start
+      reading for some research, then stop after one paragraph to look at the terminal again. The waits were short, but
+      because I kept checking, I never really left.
+    </p>
+
+    <h2>A sound instead of a glance</h2>
+    <p>
+      So I made Claude Code tell me. Claude Code can run a small script at fixed moments, called <a
+        href="https://code.claude.com/docs/en/hooks" rel="noopener">hooks</a>. I added one that plays a sound and shows a
+      Windows notification when Claude is done, and when it needs my permission or an answer. The sound is one I picked
+      myself, so I know it’s Claude without looking.
+    </p>
+    <figure>
+      <img
+        src="/skills/cooked-toasts.png"
+        width="534"
+        height="373"
+        alt="Two Windows notifications from Claude Code. One says a session is cooked after 4 minutes 12 seconds. The other says the session needs your ok to run Bash."
+      />
+    </figure>
+    <p>
+      Now I give Claude a task and turn away from it. I open the course, or the paper, or whatever I wanted to learn that
+      day. If there is no sound, it is still cooking and nothing needs me. When the sound comes, I go back.
+    </p>
+    <p>That was the real change for me. Silence used to mean “go check”. Now it means “keep going”.</p>
+
+    <h2>What five days looked like</h2>
+    <p>
+      In its first five days it called me back 593 times. Each one is a moment I used to go and look for myself, usually
+      more than once.
+    </p>
+    <p>
+      It also kept quiet 523 times, for quick replies under 30 seconds and when I was already looking at that tab. A ping I
+      didn’t need would have pulled me right back into checking.
+    </p>
+    <p>
+      Claude doesn’t need me to watch it work. It needs me when it’s done, or when it’s stuck. The time in between is mine
+      again.
+    </p>
+
+    <h2>Try it</h2>
+    <p>
+      If you use Claude Code on Windows, you can set it up with one paste. It asks you four things (voice, sound, when to
+      ping you, and whether to push to your phone), then sends a test notification so you see it working. It’s Windows only
+      for now, because it uses Windows notifications.
+    </p>
+    <pre class="essay__paste"><code>{paste}</code></pre>
+    <ul class="links">
+      <li><a class="btn btn--primary" href="/skills/cooked/">How cooked works</a></li>
+      <li><a class="btn" href="https://github.com/dihannahdi/cooked" rel="noopener">View on GitHub</a></li>
+    </ul>
+  </article>
+</Base>
+
+<style>
+  .essay { padding: 72px 0 0; }
+  .essay > * { max-width: 64ch; }
+  .essay p { font-size: 18px; line-height: 1.7; margin: 0 0 18px; }
+  .essay__lede { font-size: clamp(19px, 2.4vw, 22px) !important; color: var(--muted); margin: 12px 0 36px !important; }
+  .essay h2 { font-size: 22px; font-weight: 800; margin: 44px 0 14px; }
+  .essay a:not(.btn) { color: var(--accent); }
+  .essay figure { margin: 28px 0; }
+  .essay img { width: 100%; max-width: 534px; height: auto; }
+  .essay__paste {
+    margin: 8px 0 0; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface);
+    white-space: pre-wrap; word-break: break-word; font: 500 14px/1.7 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+  @media (max-width: 720px) {
+    .essay { padding-top: 40px; }
+    .essay p { font-size: 17px; }
+  }
+</style>
